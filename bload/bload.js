@@ -1,5 +1,5 @@
 /*!
- * bload.js v0.3.0
+ * bload.js v0.3.1
  */
 ;(function($) {
 	var bload = {
@@ -18,13 +18,27 @@
 			if (base.showing == true) return;
 			
 			// simple / image
-			base.$mask = $('<div />').css({
+			var pos = base.$tomask.offset();
+			if (base.options.fullScreen == false) {
+				var left = pos.left + ( (base.$tomask.width() - (base.options.imageDims.w + (base.options.imagePadding * 2))) / 2 );
+				var top = pos.top + ( (base.$tomask.height() - (base.options.imageDims.h + (base.options.imagePadding * 2))) / 2 );
+				var maskPosition = 'absolute';
+			} else {
+				var left = ( ($(window).width() - (base.options.imageDims.w + (base.options.imagePadding * 2))) / 2 );
+				var top = ( ($(window).height() - (base.options.imageDims.h + (base.options.imagePadding * 2))) / 2 );
+				var maskPosition = 'fixed';
+			}
+			var maskCss = {
 				padding : base.options.imagePadding + 'px',
 				backgroundColor : '#000',
-				position : 'absolute',
+				position : maskPosition,
 				borderRadius : '4px 4px 4px 4px',
+				top : top,
+				left : left,
 				zIndex: 10000,
-			});
+			};
+			
+			base.$mask = $('<div />').css(maskCss);
 			
 			if (base.options.imagePath === false) {
 				base.$mask.append($('<div />').addClass('bloading'));
@@ -36,11 +50,6 @@
 				}));
 			}
 			
-			var pos = base.$tomask.offset();
-			var left = pos.left + ( (base.$tomask.width() - (base.options.imageDims.w + (base.options.imagePadding * 2))) / 2 );
-			var top = pos.top + ( (base.$tomask.height() - (base.options.imageDims.h + (base.options.imagePadding * 2))) / 2 );
-			
-			base.$mask.css({top: top, left: left});
 			callback = base.callback;
 			base.showing = true;
 			
@@ -56,7 +65,7 @@
 					zIndex: 9999,
 				};
 				
-				if (base.options.overlay.fullScreen == false) {
+				if (base.options.fullScreen == false) {
 					css.position = 'absolute';
 					css.top = pos.top+'px';
 					css.left = pos.left+'px';
@@ -91,10 +100,9 @@
 			imagePath		: false,
 			imagePadding	: 16,
 			imageDims		: {w:32,h:32},
-			maskDims		: {w:64,h:64},
+			fullScreen		: false,
 			overlay : {
 				show		: false,
-				fullScreen	: false,
 				color		: '#000',
 				opacity		: .2				
 			}
