@@ -1,5 +1,5 @@
 /*!
- * bload.js v0.3.1
+ * bload.js v0.3.2
  */
 ;(function($) {
 	var bload = {
@@ -40,14 +40,18 @@
 			
 			base.$mask = $('<div />').css(maskCss);
 			
-			if (base.options.imagePath === false) {
-				base.$mask.append($('<div />').addClass('bloading'));
-			} else {
-				base.$mask.append($('<div />').css({
-					backgroundImage : 'url(' + base.options.imagePath + ')',
-					width : base.options.imageDims.w + 'px',
-					height : base.options.imageDims.h + 'px'
-				}));
+			var showBloading = (base.$tomask.is(':visible') == false && base.options.fullScreen == false) ? false : true;
+			
+			if (showBloading) {
+				if (base.options.imagePath === false) {
+					base.$mask.append($('<div />').addClass('bloading'));
+				} else {
+					base.$mask.append($('<div />').css({
+						backgroundImage : 'url(' + base.options.imagePath + ')',
+						width : base.options.imageDims.w + 'px',
+						height : base.options.imageDims.h + 'px'
+					}));
+				}
 			}
 			
 			callback = base.callback;
@@ -73,8 +77,10 @@
 					css.height = base.$tomask.height()+'px';
 				}
 				
-				base.$overlay = $('<div />').css(css);
-				$("body").append( base.$overlay.fadeTo(base.options.fadeInSpeed, base.options.overlay.opacity) );
+				if (showBloading) {
+					base.$overlay = $('<div />').css(css);
+					$("body").append( base.$overlay.fadeTo(base.options.fadeInSpeed, base.options.overlay.opacity) );
+				}
 			}
 			// append image
 			$("body").append(base.$mask.fadeTo(base.options.fadeInSpeed, base.options.maskOpacity, function(){
