@@ -1,8 +1,12 @@
 /*!
- * bload.js v0.4.0
+ * bload.js v0.4.1
  */
 ;(function($) {
 	var bload = function(tomask, options, callback){
+
+	};
+	
+	bload.prototype.init = function(tomask, options, callback){
 		this.showing = false;
 		this.$tomask = tomask;
 		this.options = options;
@@ -142,9 +146,11 @@
 			var bloadInst = $(this).data('bload');
 		} else {
 			$(this).data('bloadInit', true);
-			var bloadInst = new bload($(this), options, callback);
+			var bloadInst = new bload();
 			$(this).data('bload', bloadInst);
 		}
+		
+		bloadInst.init($(this), options, callback);
 
 		return bloadInst;
 	};
